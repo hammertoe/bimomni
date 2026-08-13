@@ -21,6 +21,27 @@ _processor: Any = None
 _loaded_signature: tuple[str, str, str] | None = None
 
 
+def _disable_allocator_warmup() -> None:
+    """Disable a transformers loading optimization unsupported by ZeroGPU.
+
+    transformers 5.x pre-allocates the model's full quantized footprint with
+    one large ``torch.empty`` call. ZeroGPU's virtual CUDA/NVML allocator
+    crashes on that call before any weights load. The warm-up only improves
+    load speed; normal shard-by-shard allocation remains correct without it.
+    """
+    import transformers.modeling_utils as modeling_utils
+
+    if getattr(modeling_utils.caching_allocator_warmup, "_bimomni_disabled", False):
+        return
+
+    def _noop(*_args: Any, **_kwargs: Any) -> None:
+        return None
+
+    _noop._bimomni_disabled = True  # type: ignore[attr-defined]
+    modeling_utils.caching_allocator_warmup = _noop
+    log.info("disabled transformers CUDA allocator warm-up for ZeroGPU")
+
+
 def _bnb_config() -> Any:
     from transformers import BitsAndBytesConfig
 
@@ -56,6 +77,7 @@ def load_qwen(
         Qwen3OmniMoeForConditionalGeneration,
     )
 
+    _disable_allocator_warmup()
     log.info("loading Qwen3-Omni base: %s @ %s…", base_id, base_revision[:8])
     base = Qwen3OmniMoeForConditionalGeneration.from_pretrained(
         base_id,

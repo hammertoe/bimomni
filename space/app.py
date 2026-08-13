@@ -104,23 +104,59 @@ def compare(
 
     log.info("compare(audio=%s, duration=%.1fs)", audio_path, duration)
 
-    _ensure_whisper()
+    try:
+        _ensure_whisper()
+    except Exception as exc:
+        log.exception("Whisper load failed")
+        yield "", "", "", f"Whisper load failed: {type(exc).__name__}: {exc}", "error", "—", "—"
+        return
     yield "", "", "", "Transcribing with Whisper-large-v3…", "running…", "—", "—"
 
-    t0 = time.monotonic()
-    whisper_text = whisper_transcribe(WHISPER_PIPE, audio_path)
-    t_whisper = time.monotonic() - t0
+    try:
+        t0 = time.monotonic()
+        whisper_text = whisper_transcribe(WHISPER_PIPE, audio_path)
+        t_whisper = time.monotonic() - t0
+    except Exception as exc:
+        log.exception("Whisper transcription failed")
+        yield "", "", "", f"Whisper failed: {type(exc).__name__}: {exc}", "error", "—", "—"
+        return
 
     yield whisper_text, "", "", "Transcribing with Qwen3-Omni (base)…", f"{t_whisper:.1f}s", "running…", "—"
 
-    model, processor = _ensure_qwen()
+    try:
+        model, processor = _ensure_qwen()
+    except Exception as exc:
+        log.exception("Qwen load or activation probe failed")
+        yield (
+            whisper_text,
+            "",
+            "",
+            f"Qwen load/probe failed: {type(exc).__name__}: {exc}",
+            f"{t_whisper:.1f}s",
+            "error",
+            "—",
+        )
+        return
     audio_array, sample_rate = load_audio_array(audio_path)
 
-    t0 = time.monotonic()
-    base_text = qwen_transcribe(
-        model, processor, audio_array, sample_rate, apply_adapter=False
-    )
-    t_base = time.monotonic() - t0
+    try:
+        t0 = time.monotonic()
+        base_text = qwen_transcribe(
+            model, processor, audio_array, sample_rate, apply_adapter=False
+        )
+        t_base = time.monotonic() - t0
+    except Exception as exc:
+        log.exception("Qwen base transcription failed")
+        yield (
+            whisper_text,
+            "",
+            "",
+            f"Qwen base failed: {type(exc).__name__}: {exc}",
+            f"{t_whisper:.1f}s",
+            "error",
+            "—",
+        )
+        return
 
     yield (
         whisper_text,
@@ -132,11 +168,24 @@ def compare(
         "running…",
     )
 
-    t0 = time.monotonic()
-    bimomni_text = qwen_transcribe(
-        model, processor, audio_array, sample_rate, apply_adapter=True
-    )
-    t_bimomni = time.monotonic() - t0
+    try:
+        t0 = time.monotonic()
+        bimomni_text = qwen_transcribe(
+            model, processor, audio_array, sample_rate, apply_adapter=True
+        )
+        t_bimomni = time.monotonic() - t0
+    except Exception as exc:
+        log.exception("BimOmni transcription failed")
+        yield (
+            whisper_text,
+            base_text,
+            "",
+            f"BimOmni failed: {type(exc).__name__}: {exc}",
+            f"{t_whisper:.1f}s",
+            f"{t_base:.1f}s",
+            "error",
+        )
+        return
 
     yield (
         whisper_text,

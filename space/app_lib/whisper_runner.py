@@ -28,8 +28,10 @@ def load_whisper(model_id: str) -> Any:
         "automatic-speech-recognition",
         model=model_id,
         chunk_length_s=30,
-        torch_dtype="bfloat16",
-        device_map="cuda",
+        # Qwen's 4-bit Thinker needs almost the whole A10G. Retaining
+        # Whisper-large-v3 on CUDA makes the subsequent Qwen load OOM.
+        torch_dtype="float32",
+        device=-1,
     )
     _loaded_for = model_id
     return _pipe
