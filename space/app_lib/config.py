@@ -9,7 +9,7 @@ from pathlib import Path
 
 # Model identifiers.
 BASE_MODEL_ID = "Qwen/Qwen3-Omni-30B-A3B-Instruct"
-BASE_MODEL_REVISION = "26291f793822fb6fe9555850f06dfe95f2d7e695"
+BASE_MODEL_REVISION = "26291f793822fb6be9555850f06dfe95f2d7e695"
 ADAPTER_ID = "hammertoe/Qwen3-Omni-30B-A3B-Barbados-LoRA-v4"
 
 WHISPER_MODEL_ID = "openai/whisper-large-v3"
