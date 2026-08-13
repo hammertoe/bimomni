@@ -24,6 +24,7 @@ DEFAULT_IGNORE = (
     r"re:.*audio_tower.*",
     r"re:.*code2wav.*",
 )
+THINKER_DECODER_LAYER = "Qwen3OmniMoeThinkerTextDecoderLayer"
 
 
 @dataclass(frozen=True, slots=True)
@@ -284,6 +285,7 @@ def quantize_checkpoint(
         max_seq_length=calibration.max_sequence_length,
         num_calibration_samples=calibration.samples,
         moe_calibrate_all_experts=True,
+        sequential_targets=[THINKER_DECODER_LAYER],
     )
     runtime.validate_weight_scales(model.thinker)
 

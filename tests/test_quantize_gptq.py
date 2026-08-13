@@ -224,6 +224,7 @@ def test_quantize_checkpoint_targets_thinker_and_saves_complete_model(tmp_path) 
     assert runtime.oneshot_call["recipe"] == "gptq-recipe"
     assert runtime.oneshot_call["num_calibration_samples"] == 8
     assert runtime.oneshot_call["max_seq_length"] == 512
+    assert runtime.oneshot_call["sequential_targets"] == ["Qwen3OmniMoeThinkerTextDecoderLayer"]
     assert runtime.validated is runtime.model.thinker
     assert runtime.modified is runtime.model
     assert runtime.model.saved_to == (str(output_dir), {"save_compressed": True})
