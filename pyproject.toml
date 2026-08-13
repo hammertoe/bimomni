@@ -91,6 +91,16 @@ dev = [
   "pytest-cov",
   "ruff>=0.6",
 ]
+# Minimal runtime deps for the unit tests (tiny throwaway models, no GPU/flash-attn).
+# The full `train` extra cannot be installed in CI because flash-attn builds from
+# source and needs a CUDA toolchain + torch at build time; tests don't use it.
+test = [
+  "numpy",
+  "torch",
+  "transformers",
+  "peft",
+  "safetensors",
+]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/bimomni"]
@@ -116,6 +126,7 @@ conflicts = [
     { extra = "train" },
     { extra = "corpus" },
     { extra = "mlx" },
+    { extra = "test" },
   ],
 ]
 
