@@ -105,6 +105,20 @@ markers = [
   "needs_apple_silicon: requires Apple Silicon hardware + mlx-vlm",
 ]
 
+[tool.uv]
+# The `train` (GPU / ms-swift), `corpus` (docling OCR), and `mlx`
+# (Apple-Silicon inference) stacks each pin different, mutually incompatible
+# `transformers` releases, so no two can share one environment. Declaring the
+# conflict lets the universal lock resolve each extra independently instead of
+# failing the whole resolution. Install at most one of: train / corpus / mlx.
+conflicts = [
+  [
+    { extra = "train" },
+    { extra = "corpus" },
+    { extra = "mlx" },
+  ],
+]
+
 [tool.ruff]
 line-length = 100
 target-version = "py311"

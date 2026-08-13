@@ -5,8 +5,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import pytest
-
 from bimomni.training.recipe import (
     BASE_MODEL_ID,
     BASE_MODEL_REVISION,

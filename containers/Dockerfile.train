@@ -12,7 +12,7 @@
 #
 # Build (linux/amd64, emulated on Apple Silicon):
 #   docker buildx build --platform linux/amd64 \
-#     -f hf_space/Dockerfile -t ghcr.io/hammertoe/qwen3-omni-barbados-dapt:v3 .
+#     -f containers/Dockerfile.train -t ghcr.io/hammertoe/qwen3-omni-barbados-dapt:v3 .
 #
 # Run modes (default: train --budget 12):
 #   docker run --rm --gpus all --env HF_TOKEN ... ghcr.io/.../qwen3-omni-barbados-dapt:v3
@@ -111,16 +111,16 @@ RUN pip install --no-cache-dir --force-reinstall --no-deps "fsspec==2026.2.0" \
 # breaks against torch 2.7.1 (torchvision 0.24.x bug) or downgrades numpy via
 # numba. DAPT is text-only, so replace the package with a pure-Python shim;
 # the real dist-info stays so ms-swift's version check passes.
-COPY hf_space/image_assets/qwen_omni_utils_shim/ \
+COPY src/bimomni/training/image_assets/qwen_omni_utils_shim/ \
     /usr/local/lib/python3.11/site-packages/qwen_omni_utils/
 
 COPY --from=flash-builder /wheels/flash_attn-*.whl /tmp/wheels/
 RUN pip install --no-cache-dir /tmp/wheels/flash_attn-*.whl \
     && rm -rf /tmp/wheels
 
-COPY hf_space /workspace/hf_space
+COPY src/bimomni /workspace/bimomni
 
 RUN python -c "import flash_attn, peft, swift, torch, torchvision, transformers; from qwen_omni_utils import vision_process; assert torch.__version__ == '2.7.1+cu126'; assert torchvision.__version__ == '0.22.1+cu126'; assert transformers.__version__ == '5.8.1'; assert peft.__version__ == '0.18.1'; assert swift.__version__ == '4.4.2'; assert flash_attn.__version__ == '2.7.4.post1'; assert vision_process.FPS == 2.0; assert callable(vision_process.fetch_image)"
 
-ENTRYPOINT ["python", "-m", "hf_space.supervisor"]
+ENTRYPOINT ["python", "-m", "bimomni.training.supervisor"]
 CMD ["train", "--budget", "12"]

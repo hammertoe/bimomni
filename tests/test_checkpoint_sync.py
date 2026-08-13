@@ -5,8 +5,8 @@ from __future__ import annotations
 import json
 import shutil
 import threading
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Sequence
 from unittest.mock import MagicMock
 
 import pytest

@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
-import json
 import hashlib
+import json
 import sys
 from pathlib import Path
 
 import pytest
 
+from bimomni.evaluation.evaluate import _attach_adapter
 from bimomni.evaluation.knowledge import (
     Probe,
     ProbeResult,
@@ -20,8 +21,6 @@ from bimomni.evaluation.knowledge import (
     resolve_probe_membership,
     score_choices,
 )
-from bimomni.evaluation.evaluate import _attach_adapter
-
 
 PROBES_PATH = (
     Path(__file__).resolve().parents[1]

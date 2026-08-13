@@ -6,10 +6,10 @@ import pytest
 
 from bimomni.training.budget_guard import (
     GPU_LIMIT_HOURS,
-    elapsed_gpu_hours,
-    parse_nvidia_smi_power,
-    exceeds_budget,
     BudgetGuard,
+    elapsed_gpu_hours,
+    exceeds_budget,
+    parse_nvidia_smi_power,
 )
 
 

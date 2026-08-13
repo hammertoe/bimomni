@@ -6,7 +6,7 @@ library versions, the Qwen3-Omni-specific PEFT loading rule, proof that the
 adapter is active, and the valid benchmark result from 2026-08-06.
 
 The training history is in `docs/15_qwen3_omni_dapt_executed.md`. The benchmark
-implementation is `hf_space/knowledge_benchmark.py`.
+implementation is `src/bimomni/evaluation/knowledge.py`.
 
 ## 1. Known-good artefacts
 
@@ -207,7 +207,7 @@ export HF_HOME=/data/hf
 export ENABLE_AUDIO_OUTPUT=0
 
 setsid nohup /workspace/inference-venv/bin/python \
-  /workspace/repo/hf_space/knowledge_benchmark.py \
+  /workspace/repo/src/bimomni/evaluation/knowledge.py \
   --model /data/hf/base_local \
   --adapter /data/adapter_pull \
   --output-dir /data/knowledge-benchmark-valid \
@@ -287,7 +287,7 @@ Local benchmark (Apple Silicon, fused snapshot, 60-probe set, mean token
 log-probability):
 
 ```bash
-.venv/bin/python -m hf_space.knowledge_benchmark_mlx_fused \
+.venv/bin/python -m bimomni.inference.mlx_fused \
     --model model/qwen3-omni-4bit-v4 \
     --output-dir artefacts/qwen3-omni-barbados-benchmark-mlx-fused-4bit-v4
 ```

@@ -2,14 +2,13 @@
 
 from __future__ import annotations
 
-
 from bimomni.publish.upload import (
+    MODEL_REPO,
     BaseModelInfo,
-    build_model_card,
+    FusedModelInfo,
     build_fused_card,
     build_mlx_card,
-    FusedModelInfo,
-    MODEL_REPO,
+    build_model_card,
 )
 
 
@@ -34,7 +33,7 @@ def test_build_model_card_contains_required_sections() -> None:
     assert "talker" in card.lower()
     assert "text-only" in card.lower()
     assert "Prime Intellect" in card
-    assert "hammertoe/Qwen3-Omni-30B-A3B-Barbados-LoRA-v3" in card
+    assert "hammertoe/Qwen3-Omni-30B-A3B-Barbados-LoRA-v4" in card
     assert "12" in card
 
 

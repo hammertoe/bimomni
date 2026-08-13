@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -31,8 +31,7 @@ from bimomni.evaluation.knowledge import (
 )
 
 if TYPE_CHECKING:
-    import mlx.core as mx  # pragma: no cover
-    import mlx.nn as nn  # pragma: no cover
+    pass  # pragma: no cover
 
 
 def _score_probe_mlx(
@@ -90,7 +89,7 @@ def _write_reports_mlx(
 ) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     payload = {
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "model_id": model_id,
         "adapter_path": adapter_path,
         "comparison": asdict(comparison),

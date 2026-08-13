@@ -14,7 +14,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 MODEL_ID = "Qwen/Qwen3-Omni-30B-A3B-Instruct"
-MODEL_REPO = "hammertoe/Qwen3-Omni-30B-A3B-Barbados-LoRA-v3"
+MODEL_REPO = "hammertoe/Qwen3-Omni-30B-A3B-Barbados-LoRA-v4"
 
 
 @dataclass(frozen=True)
@@ -221,7 +221,7 @@ def build_mlx_card(info: FusedModelInfo) -> str:
     return f"""---
 base_model: {info.base_model}
 base_model_revision: {info.base_revision}
-fused_repo: hammertoe/Qwen3-Omni-30B-A3B-Barbados-fused-bf16-v3
+fused_repo: hammertoe/BimOmni-30B-A3B
 adapter_repo: {info.adapter_repo}
 library_name: mlx
 pipeline_tag: text-generation
@@ -244,7 +244,7 @@ fused source: text-only output, audio/visual input towers kept.
 
 ```bash
 mlx_lm.generate \
-    --model hammertoe/Qwen3-Omni-30B-A3B-Barbados-4bit-v3 \
+    --model hammertoe/BimOmni-30B-A3B-MLX-4bit \
     --prompt "The Crop Over festival in Barbados" \
     --max-tokens 100
 ```

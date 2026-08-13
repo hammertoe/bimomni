@@ -13,7 +13,7 @@ docker buildx build \
     --platform linux/amd64 \
     --provenance=false \
     --build-arg "BASE_IMAGE=${BASE_IMAGE_REF}" \
-    --file hf_space/Dockerfile.finalise \
+    --file containers/Dockerfile.finalise \
     --tag "${image}:${tag}" \
     --push \
     .

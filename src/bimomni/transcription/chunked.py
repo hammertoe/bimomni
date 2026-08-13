@@ -13,20 +13,18 @@ Pulse fixtures.
 from __future__ import annotations
 
 import argparse
-from difflib import SequenceMatcher
 import json
 import logging
 import re
-import shutil
 import subprocess
 import sys
 import tempfile
 import time
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
+from difflib import SequenceMatcher
 from pathlib import Path
-from typing import Any
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 # MLX is Apple-Silicon only. The patch is a no-op on Linux CI and on
 # mlx-vlm >= 0.6.10, so this is safe to import unconditionally.
@@ -38,9 +36,7 @@ from bimomni.inference.audio_compat import ensure_audio_patch as _ensure_audio_p
 
 if TYPE_CHECKING:
     import mlx.core as mx  # pragma: no cover
-    import mlx_vlm  # pragma: no cover
 
-import numpy as np
 
 DEFAULT_MODEL_PATH = Path("model/qwen3-omni-4bit")
 DEFAULT_OUTPUT_DIR = Path("transcripts")
@@ -446,6 +442,7 @@ def main() -> int:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     if not args.video.exists():
         parser.error(f"video not found: {args.video}")
+    video_path = args.video
     if not args.model.exists():
         parser.error(f"model not found: {args.model}")
     duration_s = _probe_duration(args.video)
@@ -454,7 +451,7 @@ def main() -> int:
     )
     if args.max_windows:
         windows = windows[:args.max_windows]
-    timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    timestamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
     out_dir = args.output / f"bimomni-transcription-{args.label}-{timestamp}"
     out_dir.mkdir(parents=True, exist_ok=True)
     log.info("loading BimOmni from %s", args.model)

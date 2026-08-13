@@ -12,7 +12,7 @@ printf '%s\n' "$GHCR_TOKEN" | docker login ghcr.io --username hammertoe --passwo
 docker buildx build \
     --platform linux/amd64 \
     --provenance=false \
-    --file hf_space/Dockerfile \
+    --file containers/Dockerfile.train \
     --tag "${image}:${tag}" \
     --push \
     .

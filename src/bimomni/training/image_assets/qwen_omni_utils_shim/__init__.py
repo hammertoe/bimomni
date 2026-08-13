@@ -16,9 +16,9 @@ from . import vision_process
 from .vision_process import fetch_image, fetch_video, process_mm_info, process_vision_info
 
 __all__ = [
-    "vision_process",
     "fetch_image",
     "fetch_video",
     "process_mm_info",
     "process_vision_info",
+    "vision_process",
 ]

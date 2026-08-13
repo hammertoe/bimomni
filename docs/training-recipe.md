@@ -163,10 +163,10 @@ newspaper-only default.
    cd pulse
    ```
 
-4. Build the container (uses the project Dockerfile in `hf_space/`):
+4. Build the container (uses the project Dockerfile in `containers/`):
 
    ```bash
-   docker build -t pulse/qwen3-omni-dapt hf_space/
+   docker build -t bimomni/qwen3-omni-dapt -f containers/Dockerfile.train .
    ```
 
 5. Export required secrets:
@@ -259,7 +259,7 @@ mlx_lm.convert \
     --skip-talker
 
 # 2. Fuse adapter into the converted model
-python hf_space/strip_talker.py \
+python src/bimomni/publish/strip_talker.py \
     --mlx-path ./mlx/qwen3-omni-barbados-bf16 \
     --adapter-repo pulse/Qwen3-Omni-30B-A3B-Barbados-LoRA \
     --out ./mlx/qwen3-omni-barbados-fused

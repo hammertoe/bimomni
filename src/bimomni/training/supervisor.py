@@ -33,23 +33,32 @@ import argparse
 import json
 import logging
 import os
-import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from bimomni.publish.fuse import fuse_adapter, write_provenance
+from bimomni.publish.strip_talker import rewrite_mlx_config, strip_mlx_safetensors
+from bimomni.publish.upload import (
+    BaseModelInfo,
+    FusedModelInfo,
+    assert_adapter_loads,
+    upload_fused,
+    upload_mlx,
+)
+from bimomni.publish.upload import (
+    upload as upload_adapter,
+)
 from bimomni.training.budget_guard import (
     build_guard,
 )
 from bimomni.training.checkpoint_sync import (
-    KEEP_COMPLETED,
     Uploader,
     create_bucket_for_run,
     restore_latest_checkpoint,
     restore_latest_checkpoint_any,
 )
-from bimomni.publish.fuse import fuse_adapter, write_provenance
 from bimomni.training.recipe import (
     ADAPTER_MODEL_REPO_ID,
     BASE_MODEL_ID,
@@ -62,18 +71,9 @@ from bimomni.training.recipe import (
     build_current_manifest,
     write_manifest,
 )
-from bimomni.publish.strip_talker import rewrite_mlx_config, strip_mlx_safetensors
 from bimomni.training.train import (
     DAPTConfig,
     smoke_config,
-)
-from bimomni.publish.upload import (
-    BaseModelInfo,
-    FusedModelInfo,
-    assert_adapter_loads,
-    upload as upload_adapter,
-    upload_fused,
-    upload_mlx,
 )
 
 LOGGER = logging.getLogger("bimomni.training.supervisor")
@@ -128,10 +128,10 @@ def ensure_directories() -> None:
 
 def verify_environment() -> None:
     """Sanity-check CUDA, the verified package set, and HF credentials."""
+    import huggingface_hub
+    import peft
     import torch
     import transformers
-    import peft
-    import huggingface_hub
 
     LOGGER.info("torch=%s transformers=%s peft=%s huggingface_hub=%s",
                 torch.__version__, transformers.__version__, peft.__version__,
@@ -202,7 +202,7 @@ def download_dataset_files(*, target_dir: Path) -> tuple[Path, Path]:
 
 def cmd_doctor(_args: argparse.Namespace) -> int:
     ensure_directories()
-    env = Env.load()
+    Env.load()
     verify_environment()
     download_base_model()
     LOGGER.info("doctor OK")
@@ -397,7 +397,7 @@ def cmd_push_adapter(args: argparse.Namespace) -> int:
     LOGGER.info("restored adapter candidate from %s", restored)
     try:
         assert_adapter_loads(restored)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         LOGGER.error("adapter validation failed: %s", exc)
         return 1
     info = BaseModelInfo(
@@ -407,7 +407,7 @@ def cmd_push_adapter(args: argparse.Namespace) -> int:
     )
     try:
         url = upload_adapter(restored, info, token=env.hf_token)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         LOGGER.error("adapter upload failed: %s", exc)
         return 1
     LOGGER.info("adapter re-uploaded to %s", url)
@@ -527,7 +527,7 @@ def _finalise(*, env: Env, manifest: Any) -> None:
         return
     try:
         assert_adapter_loads(latest)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         LOGGER.error("adapter validation failed: %s", exc)
         return
     info = BaseModelInfo(
@@ -538,7 +538,7 @@ def _finalise(*, env: Env, manifest: Any) -> None:
     try:
         url = upload_adapter(latest, info, token=env.hf_token)
         LOGGER.info("uploaded adapter to %s", url)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         LOGGER.error("adapter upload failed: %s", exc)
 
 

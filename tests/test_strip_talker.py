@@ -7,11 +7,11 @@ from pathlib import Path
 import pytest
 
 from bimomni.publish.strip_talker import (
-    is_talker_weight,
+    KNOWN_NON_TALKER_PREFIXES,
     filter_thinker_weights,
+    is_talker_weight,
     rewrite_mlx_config,
     strip_mlx_safetensors,
-    KNOWN_NON_TALKER_PREFIXES,
 )
 
 
@@ -52,7 +52,6 @@ def test_rewrite_mlx_config_backfills_rope_theta_and_num_experts(tmp_path: Path)
 def test_rewrite_mlx_config_parses_in_mlx_vlm(tmp_path: Path) -> None:
     """The rewritten config must satisfy mlx_vlm's ModelConfig.from_dict."""
     import json
-    import shutil
 
     pytest.importorskip("mlx_vlm")
     from mlx_vlm.models.qwen3_omni_moe import config as mlx_config

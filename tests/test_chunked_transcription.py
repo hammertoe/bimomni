@@ -3,9 +3,9 @@ from pathlib import Path
 from unittest.mock import patch
 
 from bimomni.transcription.chunked import (
-    AudioWindow,
     V4_AUDIO_PROMPT,
     V4_STITCH_PROMPT,
+    AudioWindow,
     _extract_audio_window,
     _valid_model_continuation,
     audio_windows,

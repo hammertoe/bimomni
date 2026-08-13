@@ -30,21 +30,19 @@ import shutil
 import tempfile
 import threading
 import time
+from collections.abc import Callable, Iterable
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, Iterable, Sequence
 
 from huggingface_hub import (
-    HfApi,
     batch_bucket_files,
     create_bucket,
     download_bucket_files,
     list_bucket_tree,
 )
 
-from bimomni.training.recipe import RecipeManifest, manifests_compatible, recipe_diff
-
+from bimomni.training.recipe import RecipeManifest
 
 LOGGER = logging.getLogger(__name__)
 KEEP_COMPLETED = 2
@@ -307,7 +305,7 @@ def _chunk_data_items(
     current: list[tuple[str, str, int]] = []
     current_size = 0
     for item in items:
-        src, dest, size = item
+        _src, _dest, size = item
         if current and current_size + size > batch_bytes:
             chunks.append(current)
             current = []
@@ -354,7 +352,6 @@ def prune_old_checkpoints(
     hf_token: str | None = None,
 ) -> list[int]:
     """Delete remote checkpoint prefixes so only the newest `keep` complete remain."""
-    api = HfApi(token=hf_token)
     prefix = f"runs/{run_id}/checkpoints/"
     completed: list[tuple[int, Path]] = []
     for entry in list_bucket_tree(bucket_id, prefix=prefix, recursive=False):
@@ -598,7 +595,7 @@ class Uploader:
         while not self._stop.is_set():
             try:
                 self._scan_once()
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 self.log(f"[uploader] error: {exc}")
             self._stop.wait(self.poll_seconds)
 
@@ -641,7 +638,7 @@ class Uploader:
                 )
                 uploaded.append(step)
                 self.log(f"[uploader] uploaded checkpoint step={step} ({spooled})")
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 self.log(f"[uploader] upload step={step} failed: {exc}")
                 self._seen_steps.discard(step)
             finally:
@@ -656,7 +653,7 @@ class Uploader:
                 )
                 if stale:
                     self.log(f"[uploader] pruned older remote steps: {stale}")
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 self.log(f"[uploader] prune failed: {exc}")
         return uploaded
 
@@ -668,9 +665,9 @@ __all__ = [
     "KEEP_COMPLETED",
     "PARALLEL_UPLOADS",
     "UPLOAD_RETRIES",
-    "Uploader",
     "CheckpointFiles",
     "RemoteCheckpoint",
+    "Uploader",
     "create_bucket_for_run",
     "dir_size",
     "expected_checkpoint_files",

@@ -82,7 +82,7 @@ def ensure_audio_patch() -> None:
         if feature_lens is None:
             feature_lens = mx.array([input_features.shape[-1]], dtype=mx.int32)
 
-        aftercnn_lens = _patched_get_feat_extract_output_lengths(feature_lens)
+        _aftercnn_lens = _patched_get_feat_extract_output_lengths(feature_lens)
         feature_lens_np = np.array(feature_lens).astype(np.int32)
         n_window_step = self.n_window * 2
         chunk_num = np.ceil(feature_lens_np / n_window_step).astype(np.int32)

@@ -11,10 +11,10 @@ import argparse
 import hashlib
 import json
 import random
+from collections.abc import Sequence
 from dataclasses import asdict, dataclass, replace
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Sequence
 
 MODEL_ID = "Qwen/Qwen3-Omni-30B-A3B-Instruct"
 PROBES_PATH = Path(__file__).with_name("barbados_knowledge_benchmark.jsonl")
@@ -489,7 +489,7 @@ def score_model(model, tokenizer, probes: Sequence[Probe]) -> list[ProbeResult]:
 def _completion_start(prefix_ids: Sequence[int], full_ids: Sequence[int]) -> int:
     """Find the first completion-bearing token, including a boundary merge."""
     common = 0
-    for prefix_token, full_token in zip(prefix_ids, full_ids):
+    for prefix_token, full_token in zip(prefix_ids, full_ids, strict=False):
         if prefix_token != full_token:
             break
         common += 1
@@ -600,7 +600,7 @@ def _write_reports(
     adapter: Sequence[ProbeResult],
 ) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
-    generated_at = datetime.now(timezone.utc).isoformat()
+    generated_at = datetime.now(UTC).isoformat()
     payload = {
         "generated_at": generated_at,
         "model_id": model_id,

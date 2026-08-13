@@ -12,7 +12,6 @@ missing trailing range(s).
 from __future__ import annotations
 
 import os
-import threading
 import time
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed

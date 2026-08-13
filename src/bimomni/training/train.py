@@ -17,11 +17,10 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from bimomni.training.budget_guard import (
+    GPU_LIMIT_HOURS,
     BudgetGuard,
     BudgetState,
-    GPU_LIMIT_HOURS,
     build_guard,
-    load_state,
     save_state,
 )
 

@@ -18,6 +18,8 @@ from pathlib import Path
 
 from bimomni.training.recipe import (
     BASE_MODEL_ID as MODEL_ID,
+)
+from bimomni.training.recipe import (
     DATASET_REPO_ID,
     DATASET_REVISION,
 )
@@ -27,12 +29,12 @@ PACKED_PATH = DATA_ROOT / "barbados_dapt_packed.jsonl"
 EVAL_PATH = DATA_ROOT / "barbados_dapt_eval.jsonl"
 CHECKPOINT_DIR = DATA_ROOT / "checkpoints"
 HF_CACHE = DATA_ROOT / "hf"
-ADAPTER_REPO = "hammertoe/Qwen3-Omni-30B-A3B-Barbados-LoRA-v3"
+ADAPTER_REPO = "hammertoe/Qwen3-Omni-30B-A3B-Barbados-LoRA-v4"
 
 
 def cmd_download(_args: argparse.Namespace) -> int:
     """Pull the base model and pinned dataset files into the local HF cache."""
-    from huggingface_hub import snapshot_download, hf_hub_download
+    from huggingface_hub import hf_hub_download, snapshot_download
 
     snapshot_download(MODEL_ID, cache_dir=str(HF_CACHE))
     PACKED_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -62,7 +64,7 @@ def cmd_download(_args: argparse.Namespace) -> int:
 def cmd_prepare(_args: argparse.Namespace) -> int:
     """Verify the staged train/eval JSONL files exist and are well-formed."""
     if not PACKED_PATH.exists() or not EVAL_PATH.exists():
-        print(f"[prepare] missing dataset files; run download first", file=sys.stderr)
+        print("[prepare] missing dataset files; run download first", file=sys.stderr)
         return 1
     with PACKED_PATH.open("r", encoding="utf-8") as handle:
         first = handle.readline()

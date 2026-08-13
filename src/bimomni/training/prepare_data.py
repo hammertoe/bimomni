@@ -10,9 +10,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable
 
 MIN_TOKENS = 128
 MAX_TOKENS = 4096

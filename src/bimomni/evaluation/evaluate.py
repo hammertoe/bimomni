@@ -23,7 +23,7 @@ from pathlib import Path
 MODEL_ID = "Qwen/Qwen3-Omni-30B-A3B-Instruct"
 DATA_ROOT = os.environ.get("DAPT_DATA_ROOT", "/data/v3")
 EVAL_DATASET = f"{DATA_ROOT}/barbados_dapt_eval.jsonl"
-ADAPTER_REPO = "hammertoe/Qwen3-Omni-30B-A3B-Barbados-LoRA-v3"
+ADAPTER_REPO = "hammertoe/Qwen3-Omni-30B-A3B-Barbados-LoRA-v4"
 
 BARBADOS_PROMPTS = (
     "The Crop Over festival in Barbados",

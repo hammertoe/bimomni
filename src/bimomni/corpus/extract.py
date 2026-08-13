@@ -8,10 +8,9 @@ import html
 import json
 import re
 import unicodedata
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, Sequence
-
 
 WORD_RE = re.compile(r"[A-Za-z0-9]+(?:[-'][A-Za-z0-9]+)*")
 HEADING_RE = re.compile(r"^##\s+(?P<title>.+)$")
@@ -27,7 +26,7 @@ NOISE_PATTERNS = (
     re.compile(r"^Page\s+\d+$", re.IGNORECASE),
     re.compile(r"^.*\b\d{1,2}:\d{2}$"),
     re.compile(r"^RUNOVER\b.*$", re.IGNORECASE),
-    re.compile(r"^\(?Cont['’]?d\b.*(?:page\s+\d+|next page).*\)?$", re.IGNORECASE),
+    re.compile(r"^\(?Cont['’]?d\b.*(?:page\s+\d+|next page).*\)?$", re.IGNORECASE),  # noqa: RUF001 (curly apostrophe matches OCR'd "Cont'd")
     re.compile(r"^.{1,50}\b(?:from|on)\s+(?:Front\s+)?Page\s+\d+$", re.IGNORECASE),
     re.compile(r"^\(?See .*\bPage\s+\d+.*\)?$", re.IGNORECASE),
     re.compile(r"^(?:ABOVE|BELOW|RIGHT|AT RIGHT|BELOW RIGHT)\b.*", re.IGNORECASE),

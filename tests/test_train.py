@@ -2,8 +2,7 @@
 
 from __future__ import annotations
 
-
-from bimomni.training.train import build_swift_command, DAPTConfig, find_latest_checkpoint
+from bimomni.training.train import DAPTConfig, build_swift_command, find_latest_checkpoint
 
 
 def test_build_swift_command_uses_pt_subcommand() -> None:

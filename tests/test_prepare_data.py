@@ -9,8 +9,8 @@ import pytest
 
 from bimomni.training.prepare_data import (
     EVAL_FRACTION,
-    MIN_TOKENS,
     MAX_TOKENS,
+    MIN_TOKENS,
     RecordError,
     prepare_corpus,
     validate_record,

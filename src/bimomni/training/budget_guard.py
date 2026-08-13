@@ -15,9 +15,9 @@ import re
 import signal
 import subprocess
 import time
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable
 
 GPU_LIMIT_HOURS = 12.0
 IDLE_POWER_WATTS = 25.0

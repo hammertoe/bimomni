@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import json
-import time
 from pathlib import Path
 
 import pytest
@@ -11,8 +9,6 @@ import pytest
 from bimomni.training.budget_guard import (
     BudgetGuard,
     BudgetState,
-    GPU_LIMIT_HOURS,
-    POLL_SECONDS,
     build_guard,
     load_state,
     parse_nvidia_smi_power,

@@ -12,7 +12,7 @@ import json
 import pytest
 import torch
 from torch import nn
-from transformers import PreTrainedModel, PretrainedConfig
+from transformers import PretrainedConfig, PreTrainedModel
 
 from bimomni.publish.fuse import (
     disable_talker_output,
@@ -80,7 +80,7 @@ def _trained_adapter_dir(tmp_path):
 
 
 def test_fuse_model_merges_lora_math_exactly(tmp_path) -> None:
-    base_dir, adapter_dir = _trained_adapter_dir(tmp_path)
+    _base_dir, adapter_dir = _trained_adapter_dir(tmp_path)
     model = TinyModel(TinyConfig())
     with torch.no_grad():
         model.linear.weight.copy_(torch.arange(16, dtype=torch.float32).reshape(4, 4))
@@ -94,7 +94,7 @@ def test_fuse_model_merges_lora_math_exactly(tmp_path) -> None:
 
 
 def test_fuse_model_drops_lora_wrappers(tmp_path) -> None:
-    base_dir, adapter_dir = _trained_adapter_dir(tmp_path)
+    _base_dir, adapter_dir = _trained_adapter_dir(tmp_path)
     fused = fuse_model(TinyModel(TinyConfig()), adapter_dir)
 
     assert type(fused.linear) is nn.Linear

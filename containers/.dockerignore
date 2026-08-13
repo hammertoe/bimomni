@@ -72,7 +72,6 @@ playground/
 _playground/
 *.md
 README.md
-!hf_space/README.md
 
 # VCS submodules
 **/node_modules/

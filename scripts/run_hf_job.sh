@@ -18,34 +18,34 @@ bucket="${HF_BUCKET_REPO_ID:-hammertoe/barbados-dapt-checkpoints-v3}"
 
 case "$stage" in
     doctor)
-        args=(python -m hf_space.supervisor doctor)
+        args=(python -m bimomni.training.supervisor doctor)
         ;;
     smoke)
-        args=(python -m hf_space.supervisor smoke)
+        args=(python -m bimomni.training.supervisor smoke)
         ;;
     train)
         timeout="${HF_JOB_TIMEOUT:-13h}"
-        args=(python -m hf_space.supervisor train --budget "${DAPT_BUDGET_HOURS:-12}")
+        args=(python -m bimomni.training.supervisor train --budget "${DAPT_BUDGET_HOURS:-12}")
         ;;
     fuse)
         timeout="${HF_JOB_TIMEOUT:-6h}"
         flavor="${HF_JOB_FLAVOR:-cpu-performance}"
-        args=(python -m hf_space.supervisor fuse)
+        args=(python -m bimomni.training.supervisor fuse)
         ;;
     mlx)
         timeout="${HF_JOB_TIMEOUT:-6h}"
         flavor="${HF_JOB_FLAVOR:-cpu-performance}"
-        args=(python -m hf_space.supervisor mlx)
+        args=(python -m bimomni.training.supervisor mlx)
         ;;
     finalise)
         timeout="${HF_JOB_TIMEOUT:-12h}"
         flavor="${HF_JOB_FLAVOR:-cpu-performance}"
-        args=(python -m hf_space.supervisor finalise)
+        args=(python -m bimomni.training.supervisor finalise)
         ;;
     push-adapter)
         timeout="${HF_JOB_TIMEOUT:-1h}"
         flavor="${HF_JOB_FLAVOR:-cpu-performance}"
-        args=(python -m hf_space.supervisor push-adapter --run-id "${DAPT_TRAIN_RUN_ID:?set DAPT_TRAIN_RUN_ID to the finished train run}")
+        args=(python -m bimomni.training.supervisor push-adapter --run-id "${DAPT_TRAIN_RUN_ID:?set DAPT_TRAIN_RUN_ID to the finished train run}")
         ;;
     *)
         printf '%s\n' "usage: $0 [doctor|smoke|train|fuse|mlx|finalise|push-adapter]" >&2

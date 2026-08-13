@@ -20,7 +20,6 @@ from pathlib import Path
 from typing import Any
 
 from bimomni.training.train import (
-    DATA_ROOT as _DATA_ROOT,
     LORA_ALPHA,
     LORA_RANK,
     MAX_LENGTH,
@@ -28,15 +27,14 @@ from bimomni.training.train import (
     THINKER_MLP_PARAMETERS,
 )
 
-
 BASE_MODEL_ID = "Qwen/Qwen3-Omni-30B-A3B-Instruct"
 BASE_MODEL_REVISION = "26291f793822fb6be9555850f06dfe95f2d7e695"
 DATASET_REPO_ID = "hammertoe/barbados-dapt-v2"
 DATASET_REVISION = "ef6b5cc92850b90d574822d8e60d7aa1a3129d1b"
 HF_BUCKET_REPO_ID = "hammertoe/barbados-dapt-checkpoints-v3"
-ADAPTER_MODEL_REPO_ID = "hammertoe/Qwen3-Omni-30B-A3B-Barbados-LoRA-v3"
-FUSED_MODEL_REPO_ID = "hammertoe/Qwen3-Omni-30B-A3B-Barbados-fused-bf16-v3"
-MLX_MODEL_REPO_ID = "hammertoe/Qwen3-Omni-30B-A3B-Barbados-4bit-v3"
+ADAPTER_MODEL_REPO_ID = "hammertoe/Qwen3-Omni-30B-A3B-Barbados-LoRA-v4"
+FUSED_MODEL_REPO_ID = "hammertoe/BimOmni-30B-A3B"
+MLX_MODEL_REPO_ID = "hammertoe/BimOmni-30B-A3B-MLX-4bit"
 LORA_DROPOUT = 0.0
 BATCH_SIZE = 1
 GRADIENT_ACCUMULATION = 16

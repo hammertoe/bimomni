@@ -13,7 +13,6 @@ from bimomni.corpus.batch_extract import (
     process_pdf,
 )
 
-
 PROSE = (
     "The Barbados Tourism Marketing Inc. announced a new campaign for visitors "
     "and tourism partners across the island."

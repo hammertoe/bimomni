@@ -21,7 +21,7 @@ import argparse
 import json
 from collections import Counter
 from dataclasses import asdict
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -34,8 +34,7 @@ from bimomni.evaluation.knowledge import (
 )
 
 if TYPE_CHECKING:
-    import mlx.core as mx  # pragma: no cover
-    import mlx.nn as nn  # pragma: no cover
+    pass  # pragma: no cover
 
 TRACKS = ("local", "rare_local", "control")
 
@@ -102,10 +101,10 @@ def _write_reports(
     for r in results:
         by_category[f"{r.track}::{r.category}"] += 1
     payload = {
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "model_id": model_id,
-        "model_repo": "hammertoe/Qwen3-Omni-30B-A3B-Barbados-4bit-v3",
-        "summary": {"tracks": tracks + [overall]},
+        "model_repo": "hammertoe/BimOmni-30B-A3B-MLX-4bit",
+        "summary": {"tracks": [*tracks, overall]},
         "results": [
             {
                 "probe": asdict(probe),
@@ -134,7 +133,7 @@ def _write_reports(
         "| Track | N | Correct | Accuracy |",
         "|---|---:|---:|---:|",
     ]
-    for row in tracks + [overall]:
+    for row in [*tracks, overall]:
         acc = "—" if row["accuracy"] is None else f"{row['accuracy']:.1%}"
         lines.append(f"| {row['track']} | {row['count']} | {row['correct']} | {acc} |")
     lines.extend(["", "## Wrong probes", ""])
@@ -167,7 +166,7 @@ def run_fused_benchmark(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Fused MLX Barbados knowledge benchmark")
-    parser.add_argument("--model", default="model/qwen3-omni-4bit-v3")
+    parser.add_argument("--model", default="model/qwen3-omni-4bit-v4")
     parser.add_argument("--probes", type=Path, default=PROBES_PATH)
     parser.add_argument("--output-dir", type=Path, default=Path("knowledge-benchmark-mlx-fused"))
     args = parser.parse_args()

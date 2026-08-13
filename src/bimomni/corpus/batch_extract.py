@@ -15,7 +15,6 @@ from tempfile import TemporaryDirectory
 
 from bimomni.corpus.extract import generate_chunks
 
-
 RunCommand = Callable[..., object]
 
 
@@ -209,15 +208,15 @@ def build_daemon_converter(
     artifacts_path: str | None = None,
 ) -> object:
     """Construct a long-lived Docling `DocumentConverter`."""
-    from docling.datamodel.base_models import InputFormat  # noqa: PLC0415
-    from docling.datamodel.pipeline_options import PdfPipelineOptions  # noqa: PLC0415
-    from docling.document_converter import DocumentConverter, PdfFormatOption  # noqa: PLC0415
+    from docling.datamodel.base_models import InputFormat
+    from docling.datamodel.pipeline_options import PdfPipelineOptions
+    from docling.document_converter import DocumentConverter, PdfFormatOption
 
     options = PdfPipelineOptions()
     options.do_ocr = True
     if not enable_tables:
         options.do_table_structure = False
-    from docling.datamodel.pipeline_options import OcrMode  # noqa: PLC0415
+    from docling.datamodel.pipeline_options import OcrMode
 
     options.ocr_options.mode = (
         OcrMode.FULL_PAGE if ocr_mode == "full_page" else OcrMode.DEFAULT

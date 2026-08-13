@@ -3,13 +3,13 @@
 # CPU job can fuse the trained adapter and produce the 4-bit MLX artifact.
 #
 #   docker buildx build --platform linux/amd64 \
-#     -f hf_space/Dockerfile.finalise \
+#     -f containers/Dockerfile.finalise \
 #     -t ghcr.io/hammertoe/qwen3-omni-barbados-dapt:finalise-v3 .
 #
 # Run modes (CPU jobs, no GPU required):
-#   python -m hf_space.supervisor fuse
-#   python -m hf_space.supervisor mlx
-#   python -m hf_space.supervisor finalise
+#   python -m bimomni.training.supervisor fuse
+#   python -m bimomni.training.supervisor mlx
+#   python -m bimomni.training.supervisor finalise
 
 # Training image pinned by digest; re-verify the digest if the base is rebuilt.
 ARG BASE_IMAGE=ghcr.io/hammertoe/qwen3-omni-barbados-dapt@sha256:e5af38c157487c4b0f0d9d2323e80a2b620133fe356662db6e6d1f746c591db2
@@ -29,7 +29,7 @@ RUN pip install --no-cache-dir \
 
 # Re-copy the supervisor sources so this image runs the latest stages
 # (fuse/mlx/finalise) rather than the code baked into the training base.
-COPY hf_space /workspace/hf_space
+COPY src/bimomni /workspace/bimomni
 
-ENTRYPOINT ["python", "-m", "hf_space.supervisor"]
+ENTRYPOINT ["python", "-m", "bimomni.training.supervisor"]
 CMD ["fuse"]
