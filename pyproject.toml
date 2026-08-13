@@ -1,0 +1,124 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "bimomni"
+version = "0.1.0"
+description = "BimOmni: a Barbados-adapted Qwen3-Omni-30B-A3B model — corpus prep, DAPT training, MLX 4-bit publishing, and reproducible evaluation"
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+license = { text = "Apache-2.0" }
+authors = [
+  { name = "Matt Hamilton", email = "matt@dharach.com" },
+]
+keywords = [
+  "barbados",
+  "caribbean",
+  "qwen3-omni",
+  "dapt",
+  "lora",
+  "mlx",
+  "fine-tuning",
+  "asr",
+  "speech-recognition",
+  "multimodal",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+  "pydantic>=2.9",
+  "python-dotenv>=1.0",
+  "rich>=13.9",
+  "huggingface-hub>=0.34,<2.0",
+]
+
+[project.optional-dependencies]
+train = [
+  "ms-swift==4.4.2",
+  "transformers==5.8.1",
+  "peft==0.18.1",
+  "torch==2.7.1",
+  "torchvision==0.22.1",
+  "datasets<4.8.5",
+  "bitsandbytes",
+  "accelerate",
+  "fsspec==2026.2.0",
+  "addict",
+  "attrdict",
+  "binpacking",
+  "cpm-kernels",
+  "dacite",
+  "fastapi",
+  "gradio<6.0,>=3.40.0",
+  "importlib-metadata",
+  "json-repair",
+  "matplotlib",
+  "modelscope>=1.23",
+  "nltk",
+  "openai",
+  "oss2",
+  "pandas",
+  "rouge",
+  "safetensors",
+  "scipy",
+  "sentencepiece",
+  "simplejson>=3.3.0",
+  "tensorboard",
+  "tiktoken",
+  "transformers-stream-generator",
+  "trl<1.0,>=0.15",
+  "uvicorn",
+  "flash-attn==2.7.4.post1; sys_platform == 'linux'",
+]
+corpus = [
+  "docling>=2.118,<2.119",
+]
+mlx = [
+  "mlx[cpu]>=0.31.2",
+  "mlx-vlm==0.6.10",
+]
+dev = [
+  "pytest>=8.0",
+  "pytest-cov",
+  "ruff>=0.6",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/bimomni"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+markers = [
+  "slow: long-running smoke or load tests",
+  "needs_token: requires a Hugging Face access token",
+  "needs_docker: requires a local docker build to verify container images",
+  "needs_apple_silicon: requires Apple Silicon hardware + mlx-vlm",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests", "scripts"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "RUF"]
+ignore = [
+  "E501",  # line length handled by formatter
+  "B008",  # function calls in defaults (Path, dict) are intentional
+  "RUF012",  # mutable class attributes are used intentionally
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["B", "E402"]
+"scripts/**/*.py" = ["B"]
+"docs/**/*.py" = ["B", "E", "F"]

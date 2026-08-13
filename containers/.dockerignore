@@ -1,0 +1,82 @@
+# Files that must never enter the build context.
+# Keeps the image small and excludes secrets, model weights, and local artifacts.
+#
+# Apply recursively from the directory passed to `docker buildx build`.
+
+# VCS / build state
+.git/
+.gitignore
+.gitattributes
+.github/
+.opencode/
+
+# Python build/cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.venv/
+venv/
+env/
+ENV/
+
+# Node
+node_modules/
+package-lock.json
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Models, datasets, corpus (everything is fetched at runtime from HF Hub)
+model/pdfs/
+model/corpus_v2/
+model/*.bin
+model/*.safetensors
+*.pt
+*.pth
+*.bin
+
+# Trained artifacts and outputs
+**/checkpoints/
+**/smoke-checkpoints/
+**/knowledge-benchmark/
+outputs/
+runs/
+
+# Local environment and secrets
+.env
+.env.*
+*.pem
+*.key
+*.tok
+
+# Build/cache specific to Docker
+.dockerignore
+Dockerfile
+
+# Documentation and plans that do not affect runtime
+docs/
+evals/
+scripts/
+playground/
+_playground/
+*.md
+README.md
+!hf_space/README.md
+
+# VCS submodules
+**/node_modules/
+
+# Any downloaded cache
+hf/
+transformers/

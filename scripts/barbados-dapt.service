@@ -1,0 +1,19 @@
+[Unit]
+Description=Qwen3-Omni Barbados DAPT V3
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/data/v3/code
+EnvironmentFile=/data/v3/training.env
+Environment=PATH=/data/v3/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStart=/data/v3/venv/bin/python -u -m hf_space.app train --budget 12
+Restart=on-failure
+RestartSec=30
+TimeoutStopSec=120
+StandardOutput=append:/data/v3/train.log
+StandardError=append:/data/v3/train.log
+
+[Install]
+WantedBy=multi-user.target

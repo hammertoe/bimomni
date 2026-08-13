@@ -1,0 +1,35 @@
+# Qwen3-Omni Barbados DAPT finalise container.
+# Extends the immutable training image with the MLX toolchain so a single
+# CPU job can fuse the trained adapter and produce the 4-bit MLX artifact.
+#
+#   docker buildx build --platform linux/amd64 \
+#     -f hf_space/Dockerfile.finalise \
+#     -t ghcr.io/hammertoe/qwen3-omni-barbados-dapt:finalise-v3 .
+#
+# Run modes (CPU jobs, no GPU required):
+#   python -m hf_space.supervisor fuse
+#   python -m hf_space.supervisor mlx
+#   python -m hf_space.supervisor finalise
+
+# Training image pinned by digest; re-verify the digest if the base is rebuilt.
+ARG BASE_IMAGE=ghcr.io/hammertoe/qwen3-omni-barbados-dapt@sha256:e5af38c157487c4b0f0d9d2323e80a2b620133fe356662db6e6d1f746c591db2
+FROM ${BASE_IMAGE}
+
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_NO_CACHE_DIR=1
+
+# MLX Linux CPU build (>=0.31.2 ships linux/amd64 wheels) plus mlx-vlm with
+# Qwen3-Omni support (v0.6.5 fixed the double-sanitize issue for the MoE).
+RUN pip install --no-cache-dir \
+        "mlx[cpu]>=0.31.2" \
+        "mlx-vlm==0.6.5" \
+    && pip install --no-cache-dir --no-deps --force-reinstall \
+        "transformers==5.8.1" "peft==0.18.1" \
+    && python -c "from importlib.metadata import version; import mlx; import mlx_vlm; from mlx_vlm import convert; import torch, transformers, peft; print('mlx', version('mlx')); print('mlx_vlm ok'); print('torch', torch.__version__, 'transformers', transformers.__version__, 'peft', peft.__version__)"
+
+# Re-copy the supervisor sources so this image runs the latest stages
+# (fuse/mlx/finalise) rather than the code baked into the training base.
+COPY hf_space /workspace/hf_space
+
+ENTRYPOINT ["python", "-m", "hf_space.supervisor"]
+CMD ["fuse"]
