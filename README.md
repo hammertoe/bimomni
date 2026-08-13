@@ -83,6 +83,7 @@ Install the project locally:
 uv sync --extra mlx        # add the Apple Silicon MLX stack
 uv sync --extra train      # add the GPU training stack
 uv sync --extra dev        # add tests and lint
+uv sync --extra dev --extra test   # run the unit suite locally
 ```
 
 ### Local 4-bit inference (Apple Silicon)
@@ -179,6 +180,20 @@ training command construction, knowledge benchmark loaders, fuse
 verification, strip-talker correctness, supervisor dispatch, upload
 gating, and the chunked transcription helpers. MLX-only paths are
 imported lazily so the suite runs on Linux CI without Apple Silicon.
+
+## Demo Space
+
+A ZeroGPU Gradio Space under [`space/`](space/) transcribes a single ≤29 s clip
+three ways — Whisper-large-v3, Qwen3-Omni (base), and BimOmni (base + the V4
+LoRA) — in one `@spaces.GPU` task, toggling the adapter on/off via PEFT's
+`disable_adapter()`. An activation probe refuses to serve comparisons if the
+adapter is silently inactive.
+
+The Space source is self-contained in `space/` (app + `app_lib/` package +
+requirements + Space card). See [`space/README.md`](space/README.md) for the
+HF Space front-matter and deployment steps, and
+[`space/samples/README.md`](space/samples/README.md) for the operator-curated
+clip list (not committed — add WAVs at deploy time).
 
 ## Project status
 

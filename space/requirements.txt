@@ -1,0 +1,28 @@
+# HF + transformers runtime.
+# transformers bound <5.0 to match the published V4 model class load path.
+# peft==0.18.1 is REQUIRED — 0.19 splits target_modules across regex characters
+# and silently breaks loading this adapter (see Dockerfile.train comment).
+# torch is unpinned — ZeroGPU's runtime image ships a CUDA-matched torch.
+transformers>=4.51,<5.0
+peft==0.18.1
+bitsandbytes>=0.43,<0.46
+accelerate>=1.0
+huggingface_hub>=0.34,<2.0
+hf_transfer>=0.1
+
+# Model utilities. The runtime can be wildly versioned; the
+# `bimomni._qwen_omni_compat` module defensively patches broken pieces
+# at app startup so a torchvision/numpy ABI mismatch does not take down
+# the audio path.
+qwen-omni-utils==0.0.9
+
+# Audio. numpy<2.0 because torchaudio/av on ZeroGPU wheels are still 1.x.
+soundfile>=0.12
+numpy<2.0
+
+# UI / scheduling.
+gradio>=4.0,<6.0
+spaces>=0.40
+
+# Logs.
+rich>=13.0

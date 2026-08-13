@@ -37,7 +37,7 @@ jobs:
         run: uv run pytest -q
 
       - name: Ruff lint
-        run: uv run ruff check src tests scripts
+        run: uv run ruff check src tests scripts space
 
   smoke:
     name: Container build smoke (no GPU)
