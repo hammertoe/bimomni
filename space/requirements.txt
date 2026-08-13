@@ -1,9 +1,10 @@
-# HF + transformers runtime.
-# transformers bound <5.0 to match the published V4 model class load path.
+# HF + transformers runtime. transformers 5.x is required for compatibility
+# with gradio 6.x (which pulls huggingface-hub>=1.0; transformers 4.x pins
+# hub<1.0). Qwen3OmniMoeForConditionalGeneration is stable across 4.x/5.x.
 # peft==0.18.1 is REQUIRED — 0.19 splits target_modules across regex characters
-# and silently breaks loading this adapter (see Dockerfile.train comment).
+# and silently breaks loading this adapter.
 # torch is unpinned — ZeroGPU's runtime image ships a CUDA-matched torch.
-transformers>=4.51,<5.0
+transformers>=4.51
 peft==0.18.1
 bitsandbytes>=0.43,<0.46
 accelerate>=1.0
@@ -20,9 +21,10 @@ qwen-omni-utils==0.0.9
 soundfile>=0.12
 numpy<2.0
 
-# UI / scheduling.
-gradio>=4.0,<6.0
-spaces>=0.40
+# UI / scheduling. gradio and spaces are pinned by the Spaces runtime (the
+# build command installs them); don't constrain them here or pip will conflict.
+# gradio
+# spaces
 
 # Logs.
 rich>=13.0
